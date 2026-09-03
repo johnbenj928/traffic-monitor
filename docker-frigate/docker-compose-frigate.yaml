@@ -1,26 +1,30 @@
-################################################################################
-# Frigate NVR Compose
-# mqtt credentials come from broker (set up via node-red)
-################################################################################
 services:
   frigate:
     container_name: frigate
-    privileged: false # this may not be necessary for all setups
+    privileged: true
     restart: unless-stopped
-    image: ghcr.io/blakeblackshear/frigate:0.14.0
-    shm_size: "128mb" # update for your cameras based on calculation https://docs.frigate.video/frigate/installation#calculating-required-shm-size
+    image: ghcr.io/blakeblackshear/frigate:0.16.3
+    shm_size: "512mb"
     devices:
-      - /dev/bus/usb:/dev/bus/usb # passes the USB Coral, /dev/apex_0:/dev/apex_0 for pcie coral
+      - /dev/hailo0:/dev/hailo0
+      - /dev/video0:/dev/video0
+      - /dev/video8:/dev/video8
+      - /dev/video10:/dev/video10
+      - /dev/video11:/dev/video11
+      - /dev/video12:/dev/video12
+      - /dev/video19:/dev/video19
+      - /dev/video20:/dev/video20
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - ~/code/frigate/config:/config
-      - ~/code/frigate/storage:/media/frigate
+      - /opt/traffic-monitor/docker/frigate/config:/config
+      - /opt/traffic-monitor/docker/frigate/storage:/media/frigate
       - type: tmpfs # Optional: 1GB of memory, reduces SSD/SD Card wear
         target: /tmp/cache
         tmpfs:
           size: 1000000000
     ports:
-      - "5000:5000"
+      - "8971:8971"
+      - "5000:5000" # Internal unauthenticated access. Expose carefully.
       - "1964:1984" # go2rtc api
       - "8564:8554" # RTSP feeds
       - "8565:8555/tcp" # WebRTC over tcp

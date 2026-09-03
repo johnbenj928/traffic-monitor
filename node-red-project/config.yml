@@ -1,24 +1,26 @@
 thingsboard:
     enabled: false
     host: tb.server.com
-    protocol: http
-    port:
-    access_token:
+    protocol: https
+    port: 443
+    access_token: 
 
 deployment:
-    lat:
-    lon:
-    bearing:
+    lat: 0.0  # REDACTED - see live config on Pi 
+    lon: 0.0  # REDACTED - see live config on Pi
+    bearing: n
 
 sensors:
     cameras:
         picam_h264:
-            enabled: false
+            enabled: true
             camera_radar: TM_RADAR_SERIAL_PORT_00
+        picam_gs_h264:
+            enabled: false
 
     radars:
         TM_RADAR_SERIAL_PORT_00:
-            enabled: false
+            enabled: true
 
     airquality_monitors:
         sensorname01:
@@ -27,4 +29,10 @@ sensors:
 
 time:
     timezone: America/Los_Angeles
-    npt_set: false
+    npt_set: true
+
+addons:
+    adafruit_io:
+        username: "targadriver"
+        key: "REDACTED_SET_LOCALLY_IN_opt_traffic-monitor"
+        feed: "radar-speed"
